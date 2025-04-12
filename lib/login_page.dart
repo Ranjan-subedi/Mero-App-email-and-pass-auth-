@@ -1,3 +1,4 @@
+import 'package:firebase_new_project/HomeScreen.dart';
 import 'package:firebase_new_project/firebase_services.dart';
 import 'package:firebase_new_project/register_page.dart';
 import 'package:flutter/gestures.dart';
@@ -117,7 +118,9 @@ class _LoginPageState extends State<LoginPage> {
                         final login = FirebaseServices().register(
                           email: _emailController.text.trim().toLowerCase(),
                            password: _passwordController.text.toLowerCase());
-                              
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return Home();
+                              },));
                        } catch (e) {
                          // Handle error
                          print('Authentication Error: $e',);

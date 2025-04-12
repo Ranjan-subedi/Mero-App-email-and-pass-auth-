@@ -1,5 +1,6 @@
 import 'package:firebase_new_project/firebase_services.dart';
 import 'package:firebase_new_project/login_page.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -35,9 +36,26 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(20),
+            margin: const EdgeInsets.all(20),
+            height: MediaQuery.of(context).size.height * 0.5,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blue, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withAlpha(100),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ]
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text('Register', style: TextStyle(fontSize: 30,
+                color: Colors.blue,
+                 fontWeight: FontWeight.bold),),
+                SizedBox(height: 20),
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -72,49 +90,63 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async{
-                    // Handle login action
-                    if (_formKey.currentState!.validate()) {
-                      try {
-                        final register = await _firebaseServices.register(
-                          email: _emailController.text.trim().toLowerCase(),
-                         password: _passwordController.text.trim().toLowerCase());
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Register Success: ${register.toString()}',style: TextStyle(color: Colors.green),),
-                          ),
-                        );
-                        return register;
-                      } catch (e) {
-            
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error: ${e.toString()}',style: TextStyle(color: Colors.red),),
-                          ),
-                        );
-                        // print(e.toString());
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.all(15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      foregroundColor: Colors.white
+                    ),
+                    onPressed: () async{
+                      // Handle login action
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          final register = await _firebaseServices.register(
+                            email: _emailController.text.trim().toLowerCase(),
+                           password: _passwordController.text.trim().toLowerCase());
                         
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Register Success: ${register.toString()}',style: TextStyle(color: Colors.green),),
+                            ),
+                          );
+                          return register;
+                        }
+                         catch (e) {
+                              
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error: ${e.toString()}',style: TextStyle(color: Colors.red),),
+                            ),
+                          );
+                    
+                        }
+                  
                       }
-                     
-            
-            
-                    }
-            
-                  },
-                  child: const Text('Resister'),
+                              
+                    },
+                    child: const Text('Resister'),
+                  ),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                   // Navigate to login page if already registered.
-                    Navigator.pushReplacement(
-                      context, MaterialPageRoute(
-                        builder: (context) => LoginPage(),));
-                    
-                  },
-                  child: const Text('Log IN Now'),
+                RichText(text: TextSpan(children: [
+                  const TextSpan(text: 'Already have an account?',
+                  style: TextStyle(color: Colors.black, fontSize: 15),),
+                  TextSpan(
+                    recognizer: TapGestureRecognizer() ..onTap = (){
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) => const LoginPage()));
+                    },
+                    text: 'Log In',
+                  style: TextStyle(color: Colors.blue, fontSize: 15,
+                  fontWeight: FontWeight.bold),),
+                ]),
                 ),
+                
               ],
             ),
           ),
