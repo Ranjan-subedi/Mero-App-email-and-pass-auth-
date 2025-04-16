@@ -3,11 +3,11 @@ import 'package:firebase_new_project/firebase_options.dart';
 import 'package:firebase_new_project/login_page.dart';
 import 'package:flutter/material.dart';
 
-void main()async {
+void main() async {
   runApp(const MyApp());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,13 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-     
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
       home: const LoginPage(),
     );
   }
 }
-

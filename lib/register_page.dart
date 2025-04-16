@@ -11,20 +11,18 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
-  late  final TextEditingController _passwordController ;
-  late  final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  late final TextEditingController _emailController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FirebaseServices _firebaseServices = FirebaseServices();
 
   @override
   void initState() {
-    
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,22 +37,25 @@ class _RegisterPageState extends State<RegisterPage> {
             margin: const EdgeInsets.all(20),
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withAlpha(100),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ]
-            ),
+                border: Border.all(color: Colors.blue, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withAlpha(100),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ]),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Register', style: TextStyle(fontSize: 30,
-                color: Colors.blue,
-                 fontWeight: FontWeight.bold),),
+                Text(
+                  'Register',
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold),
+                ),
                 SizedBox(height: 20),
                 TextFormField(
                   validator: (value) {
@@ -82,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   controller: _passwordController,
                   decoration: const InputDecoration(
-                   labelText: 'password',
+                    labelText: 'password',
                     hintText: 'Enter your password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -94,59 +95,67 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.all(15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      foregroundColor: Colors.white
-                    ),
-                    onPressed: () async{
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        foregroundColor: Colors.white),
+                    onPressed: () async {
                       // Handle login action
                       if (_formKey.currentState!.validate()) {
                         try {
                           final register = await _firebaseServices.register(
-                            email: _emailController.text.trim().toLowerCase(),
-                           password: _passwordController.text.trim().toLowerCase());
-                        
+                              email: _emailController.text.trim().toLowerCase(),
+                              password: _passwordController.text.trim());
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Register Success: ${register.toString()}',style: TextStyle(color: Colors.green),),
+                              content: Text(
+                                'Register Success: ${register.toString()}',
+                                style: TextStyle(color: Colors.green),
+                              ),
                             ),
                           );
                           return register;
-                        }
-                         catch (e) {
-                              
+                        } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Error: ${e.toString()}',style: TextStyle(color: Colors.red),),
+                              content: Text(
+                                'Error: ${e.toString()}',
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ),
                           );
-                    
                         }
-                  
                       }
-                              
                     },
                     child: const Text('Resister'),
                   ),
                 ),
                 SizedBox(height: 20),
-                RichText(text: TextSpan(children: [
-                  const TextSpan(text: 'Already have an account?',
-                  style: TextStyle(color: Colors.black, fontSize: 15),),
-                  TextSpan(
-                    recognizer: TapGestureRecognizer() ..onTap = (){
-                      Navigator.pushReplacement(context, MaterialPageRoute(
-                        builder: (context) => const LoginPage()));
-                    },
-                    text: 'Log In',
-                  style: TextStyle(color: Colors.blue, fontSize: 15,
-                  fontWeight: FontWeight.bold),),
-                ]),
+                RichText(
+                  text: TextSpan(children: [
+                    const TextSpan(
+                      text: 'Already have an account?',
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    ),
+                    TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()));
+                        },
+                      text: 'Log In',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ]),
                 ),
-                
               ],
             ),
           ),

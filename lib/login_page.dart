@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_new_project/HomeScreen.dart';
 import 'package:firebase_new_project/firebase_services.dart';
 import 'package:firebase_new_project/register_page.dart';
@@ -12,8 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late  final TextEditingController _passwordController ;
-  late  final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  late final TextEditingController _emailController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -23,17 +24,17 @@ class _LoginPageState extends State<LoginPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text('Login Page',style: TextStyle(
-          color: Colors.white60,
-          fontSize: 32,
-          fontWeight: FontWeight.bold
-        ),),
+        title: const Text(
+          'Login Page',
+          style: TextStyle(
+              color: Colors.white60, fontSize: 32, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: Form(
@@ -44,23 +45,25 @@ class _LoginPageState extends State<LoginPage> {
             margin: const EdgeInsets.all(20),
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ]
-            ),
-            
+                border: Border.all(color: Colors.blue, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ]),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Mero App', style: TextStyle(fontSize: 30, 
-                color: Colors.blue,
-                fontWeight: FontWeight.bold),),
+                const Text(
+                  'Mero App',
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold),
+                ),
                 SizedBox(height: 20),
                 TextFormField(
                   validator: (value) {
@@ -104,49 +107,77 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        
-                      ),
-                      foregroundColor: Colors.white
-                    ),
-                    onPressed: () {
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        foregroundColor: Colors.white),
+                    onPressed: () async {
                       // Handle login action
                       if (_formKey.currentState!.validate()) {
-                       try {
-                        final login = FirebaseServices().register(
-                          email: _emailController.text.trim().toLowerCase(),
-                           password: _passwordController.text.toLowerCase());
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        try {
+                          final login = await FirebaseServices().register(
+                              email: _emailController.text.trim().toLowerCase(),
+                              password: _passwordController.text);
+
+                          if (login == UserCredential) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(microseconds: 200),
+                                content: Text(
+                                  'Login Success',
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                              ),
+                            );
+
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
                                 return Home();
-                              },));
-                       } catch (e) {
-                         // Handle error
-                         print('Authentication Error: $e',);
-                         
-                       }
+                              },
+                            ));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                duration: Duration(microseconds: 200),
+                                content: Text(
+                                  'Login Failed',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          // Handle error
+                          print(
+                            'Authentication Error: $e',
+                          );
+                        }
                       }
-                              
                     },
                     child: const Text('Login'),
                   ),
                 ),
                 SizedBox(height: 20),
-                RichText(text: TextSpan(children: [
-
-                    const TextSpan(text: 'Don\'t have an account?',style: TextStyle(color: Colors.black)),
-                    TextSpan(
-                      text: ' Register Now',
-                      style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                      recognizer: TapGestureRecognizer()..onTap = () {
+                RichText(
+                    text: TextSpan(children: [
+                  const TextSpan(
+                      text: 'Don\'t have an account?',
+                      style: TextStyle(color: Colors.black)),
+                  TextSpan(
+                    text: ' Register Now',
+                    style: const TextStyle(
+                        color: Colors.blue, fontWeight: FontWeight.bold),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
                         // Navigate to register page
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const RegisterPage()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RegisterPage()));
                       },
-                    ),
-                
+                  ),
                 ])),
-                
               ],
             ),
           ),

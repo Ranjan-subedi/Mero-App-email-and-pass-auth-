@@ -30,7 +30,7 @@ Future register({required String email, required String password})async{
 } on FirebaseAuthException catch (e) {
   if (e.code == 'weak-password') {
     return('The password provided is too weak.');
-  } else if (e.code == 'email-already-in-use') {
+  } else if (e.code == 'email-already-in-use') {  
     return('The account already exists for that email.');
   }else{
     return('Error: ${e.code}');
